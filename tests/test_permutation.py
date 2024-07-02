@@ -2,7 +2,7 @@ import unittest
 
 from math import factorial
 
-from combinatorics.permutation import powerset_permutation
+from combinatorics.permutation import *
 
 
 class TestPermutation(unittest.TestCase):
@@ -22,3 +22,30 @@ class TestPermutation(unittest.TestCase):
                 factorial(len(ITEMS))/factorial(len(ITEMS)-len_soln),
                 num_soln
             )
+    
+
+class TestGetPermutationMap(unittest.TestCase):
+    def test_one_to_one(self):
+        permutation = 'cab'
+        origin = 'abc'
+        result = get_permutation_map(permutation, origin)
+        self.assertEqual([2, 0, 1], result)
+    
+    def test_missing_element(self):
+        permutation = 'cav'
+        origin = 'abc'
+        result = get_permutation_map(permutation, origin)
+        self.assertEqual([2, 0, None], result)
+    
+    def test_many_to_one(self):
+        permutation = 'cabcb'
+        origin = 'abc'
+        result = get_permutation_map(permutation, origin)
+        self.assertEqual([2, 0, 1, 2, 1], result)
+    
+    def test_many_to_one_and_missing_element(self):
+        permutation = 'cabcbv'
+        origin = 'abc'
+        result = get_permutation_map(permutation, origin)
+        self.assertEqual([2, 0, 1, 2, 1, None], result)
+        
