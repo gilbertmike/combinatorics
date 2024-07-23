@@ -1,13 +1,12 @@
 from math import e
 from random import random
-from typing import Callable, TypeVar
+from typing import Any, Callable, TypeVar
 
 T = TypeVar('T')
 
 class SimulatedAnnealingSearch:
     def __init__(
         self,
-        cooling_speed: float,
         max_iterations: int,
         temperature_func: Callable[[float], float],
         energy_func: Callable[[T], float],
@@ -24,7 +23,6 @@ class SimulatedAnnealingSearch:
         the current state. The former should provide the energy of the
         current state. The latter should provide the next state.
         """
-        self.cooling_speed = cooling_speed
         self.max_iterations = max_iterations
         self.temperature_func = temperature_func
         self.energy_func = energy_func
@@ -53,22 +51,28 @@ class SimulatedAnnealingSearch:
         next_state = self.state_mutator(self.state)
         next_energy = self.energy_func(next_state)
 
+        updated = False
         if next_energy < self.energy:
             self.state = next_state
             self.energy = next_energy
+            updated = True
         else:
             temp = self.get_current_temperature()
             switch_prob = e**((next_energy - self.energy)/(temp*self.energy))
             if random() < switch_prob:
                 self.state = next_state
                 self.energy = next_energy
+                updated = True
 
-    def run(self, post_iteration_func: Callable):
+        return updated
+
+    def run(self, post_iteration_func: Callable[[Any, bool], Any]):
         """
         Runs the algorithm to completion, i.e., to `max_iterations`.
 
         The `post_iteration_func`, if provided, accepts `self` as the
-        only argument. It should primarily be used to inspect the state
+        first argument and a bool representing whether the state was
+        updated. It should primarily be used to inspect the state
         of the algorithm (e.g., to log progress). However, it may also
         mutate the algorithm state, although this feature should be used
         carefully. One common use is setting `self.early_stop` to `True`,
@@ -77,9 +81,9 @@ class SimulatedAnnealingSearch:
         self.early_stop = False
 
         while self.iteration < self.max_iterations:
-            self.next()
+            updated = self.next()
 
-            post_iteration_func(self)
+            post_iteration_func(self, updated)
 
             if self.early_stop:
                 break
