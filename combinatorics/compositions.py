@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from itertools import combinations
 
 
-def compositions_of_set(items: Sequence):
+def compositions_of_sequence(items: Sequence):
     """
     Iterates over all sets of non-overlapping, covering, contiguous
     subsequences of `items`.

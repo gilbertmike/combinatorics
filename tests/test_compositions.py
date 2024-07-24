@@ -1,6 +1,6 @@
 import unittest
 
-from combinatorics.compositions import compositions_of_set
+from combinatorics.compositions import compositions_of_sequence
 
 
 class TestCompositions(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestCompositions(unittest.TestCase):
         ITEMS = 'abcd'
 
         all_solns = set()
-        for composition in compositions_of_set(ITEMS):
+        for composition in compositions_of_sequence(ITEMS):
             self.assertEqual(ITEMS, ''.join(composition))
 
             self.assertTrue(composition not in all_solns)
