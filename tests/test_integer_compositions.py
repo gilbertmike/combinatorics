@@ -7,6 +7,20 @@ from combinatorics.integer import *
 
 
 class TestCompositions(unittest.TestCase):
+    def test_integer_compositions(self):
+        for n, n_parts in product(range(3, 12), [1, 2, 3]):
+            n_solns = 0
+            all_solns = set()
+            for soln in integer_compositions_with_n_parts(n, n_parts):
+                self.assertEqual(n, sum(soln))
+
+                self.assertTrue(soln not in all_solns)
+                all_solns.add(soln)
+
+                n_solns += 1
+            # See: https://en.wikipedia.org/wiki/Composition_(combinatorics)
+            self.assertEqual(comb(n-1, n_parts-1), n_solns)
+
     def test_weak_integer_compositions(self):
         for n, n_parts in product(range(3, 12), [1, 2, 3]):
             n_solns = 0

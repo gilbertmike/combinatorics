@@ -27,6 +27,22 @@ def prime_factorization(x: int):
     return tuple(powers)
 
 
+def integer_compositions_with_n_parts(n: int, n_parts: int):
+    """Partition integer `n` into positive `n_parts`, which sum to n."""
+    if n_parts == 1:
+        yield (n,)
+        return
+
+    actual_soln = [0]*n_parts
+    for soln in combinations(range(1, n), n_parts-1):
+        before = 0
+        for i in range(len(soln)):
+            actual_soln[i] = soln[i] - before
+            before = soln[i]
+        actual_soln[-1] = n - soln[-1]
+        yield tuple(actual_soln)
+
+
 def weak_integer_compositions_with_n_parts(n: int, n_parts: int):
     """Partition integer n into non-negative n_parts, which sum to n."""
     if n_parts == 1:
