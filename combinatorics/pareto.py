@@ -7,7 +7,7 @@ S = TypeVar('S')
 T = TypeVar('T')
 
 
-def pareto_filter(x: np.array, y: np.array) -> np.array:
+def pareto_filter(x: np.array, y: np.array, impute_y=False) -> np.array:
     """
     Returns a mask that if applied to x and y returns the Pareto curve
     (defined as lower is better).
@@ -15,10 +15,13 @@ def pareto_filter(x: np.array, y: np.array) -> np.array:
     sort_mask = x.argsort()
     y = y[sort_mask]
 
-    running_min_y = np.minimum.accumulate(y)
+    running_min_y = np.minimum.accumulate(np.nan_to_num(y, nan=np.inf))
+    if impute_y:
+        return running_min_y
 
     filter_mask = np.ones_like(y).astype(np.bool_)
     filter_mask[1:] = y[1:] < running_min_y[:-1]
+    filter_mask[0] = not np.isnan(y[0])
 
     return sort_mask[filter_mask]
 
