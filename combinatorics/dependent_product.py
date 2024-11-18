@@ -23,7 +23,11 @@ def dependent_product(spaces: Sequence[Callable]):
             intermediate_result = next(iterators[cur_idx])
             if cur_idx < len(spaces)-1:
                 cur_idx += 1
-                iterators[cur_idx] = iter(spaces[cur_idx](*intermediate_result))
+                if isinstance(intermediate_result, tuple):
+                    new_iter = iter(spaces[cur_idx](*intermediate_result))
+                else:
+                    new_iter = iter(spaces[cur_idx](intermediate_result))
+                iterators[cur_idx] = new_iter
             else:
                 assert cur_idx == len(spaces) - 1
                 yield intermediate_result
