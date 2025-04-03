@@ -12,3 +12,4 @@ def split_dependent_product(n_split_min: int, spaces: Sequence[Callable]):
         splits = list(dependent_product(spaces[:i]))
         if len(splits) >= n_split_min:
             return spaces[:i], spaces[i:]
+    return split_dependent_product(n_split_min // 2, spaces)
